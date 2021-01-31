@@ -38,7 +38,6 @@ class TaskController(
                 .getTasksWithPagination(completed, priority, query, page, size, authentication.name)
         )
 
-
     @PutMapping("/{id}")
     fun updateTask(
         @RequestBody taskRequestDto: TaskRequestDto,

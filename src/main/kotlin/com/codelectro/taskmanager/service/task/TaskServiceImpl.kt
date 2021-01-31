@@ -49,7 +49,7 @@ class TaskServiceImpl(
         val category = categoryRepository.findById(taskRequestDto.categoryId)
             .orElseThrow { throw RuntimeException("Category Not Found") }
         if (category.user.email != currentUserEmail) {
-            throw UnauthorizedException("User Not allowed to Delete!")
+            throw UnauthorizedException("Access is denied due to invalid credentials!")
         }
 
         return taskRepository.save(taskRequestDto.toTask(category, user))
@@ -112,7 +112,7 @@ class TaskServiceImpl(
 
         val currentUserEmail = authService.getCurrentLoggedUser()
         if (task.user.email != currentUserEmail) {
-            throw UnauthorizedException("User Not allowed to Delete!")
+            throw UnauthorizedException("Access is denied due to invalid credentials")
         }
         taskRepository.delete(task)
         return MessageResponse("Task Deleted!")
@@ -125,7 +125,7 @@ class TaskServiceImpl(
         val currentUserEmail = authService.getCurrentLoggedUser()
 
         if (task.user.email != currentUserEmail) {
-            throw UnauthorizedException("User Not allowed to Delete!")
+            throw UnauthorizedException("Access is denied due to invalid credentials")
         }
 
         return taskRepository.save(task.toUpdate(taskRequestDto))
