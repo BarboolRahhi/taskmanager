@@ -1,6 +1,7 @@
 package com.codelectro.taskmanager.dto
 
 import com.codelectro.taskmanager.model.Priority
+import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 
 data class TaskResponseDto(
@@ -9,7 +10,7 @@ data class TaskResponseDto(
         var description: String,
         var completed: Boolean = false,
         var priority: Priority,
-        var createdAt: LocalDateTime = LocalDateTime.now(),
-        var category: CategoryDto,
-        var user: UserDto? = null
+        @JsonFormat(pattern = "EEE, d MMM yyyy HH:mm:ss")
+        var createdAt: LocalDateTime,
+        var category: CategoryDto
 )
