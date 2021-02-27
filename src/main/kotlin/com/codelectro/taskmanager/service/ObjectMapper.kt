@@ -33,7 +33,7 @@ fun TaskRequestDto.toTask(category: Category, user: User) = Task(
 )
 
 fun Task.toTaskResponseDto() = TaskResponseDto(
-        id, title, description, completed, priority, createdAt, category.toCategoryDto(), user.toUserDto()
+        id, title, description, completed, priority, createdAt, category.toCategoryDto()
 )
 
 fun Task.toUpdate(dto: TaskRequestDto) = this.copy(
