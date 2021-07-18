@@ -5,12 +5,24 @@ import javax.persistence.*
 
 @Entity
 data class Task(
-        @Id @GeneratedValue var id: Int? = null,
+        @Id @GeneratedValue
+        var id: Int? = null,
+        @Column(length = 100, nullable = false)
         var title: String,
+        @Column(nullable = false)
         var description: String,
-        var completed: Boolean,
-        @Enumerated(EnumType.STRING) var priority: Priority,
+        @Column(length = 20, nullable = false)
+        @Enumerated(EnumType.STRING)
+        var status: Status = Status.TODO,
+        @Column(length = 20, nullable = false)
+        @Enumerated(EnumType.STRING)
+        var priority: Priority,
+        @Column(nullable = false)
         var createdAt: LocalDateTime = LocalDateTime.now(),
-        @ManyToOne() @JoinColumn(name="category_id") var category: Category,
-        @ManyToOne() @JoinColumn(name="user_id") var user: User
+        @Column(nullable = true)
+        var completedAt: LocalDateTime? = null,
+        @ManyToOne() @JoinColumn(name="project_id", nullable = false)
+        var project: Project,
+        @ManyToOne() @JoinColumn(name="user_id", nullable = false)
+        var user: User
 )

@@ -1,6 +1,6 @@
 package com.codelectro.taskmanager.dto
 
-data class CategoryDto(
+data class ProjectDto(
         var id: Int? = null,
         var name: String,
         var description: String

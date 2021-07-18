@@ -1,54 +1,53 @@
-package com.codelectro.taskmanager.service.category
+package com.codelectro.taskmanager.service.project
 
-import com.codelectro.taskmanager.dto.CategoryDto
+import com.codelectro.taskmanager.dto.ProjectDto
 import com.codelectro.taskmanager.dto.MessageResponse
 import com.codelectro.taskmanager.exception.NotFoundException
 import com.codelectro.taskmanager.exception.UnauthorizedException
-import com.codelectro.taskmanager.repository.CategoryRepository
+import com.codelectro.taskmanager.repository.ProjectRepository
 import com.codelectro.taskmanager.repository.UserRepository
 import com.codelectro.taskmanager.service.AuthService
-import com.codelectro.taskmanager.service.toCategory
-import com.codelectro.taskmanager.service.toCategoryDto
+import com.codelectro.taskmanager.service.toProject
+import com.codelectro.taskmanager.service.toProjectDto
 import com.codelectro.taskmanager.service.toUpdate
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
-class CategoryServiceImpl(
-        private val categoryRepository: CategoryRepository,
-        private val userRepository: UserRepository,
-        private val authService: AuthService
-) : CategoryService {
+class ProjectServiceImpl(
+    private val projectRepository: ProjectRepository,
+    private val userRepository: UserRepository,
+    private val authService: AuthService
+) : ProjectService {
 
-    override fun createCategory(categoryDto: CategoryDto): CategoryDto {
+    override fun createCategory(projectDto: ProjectDto): ProjectDto {
         val currentUserEmail = authService.getCurrentLoggedUser()
 
         val user = userRepository.findByEmail(currentUserEmail)
                 ?: throw NotFoundException("User Not Found!")
-        val category = categoryRepository.save(categoryDto.toCategory(user))
-        return category.toCategoryDto()
+        val category = projectRepository.save(projectDto.toProject(user))
+        return category.toProjectDto()
     }
 
-    override fun getCategoriesByUser(email: String): List<CategoryDto> {
-        return categoryRepository.findByUserEmail(email)
-                .map { category -> category.toCategoryDto() }
+    override fun getCategoriesByUser(email: String): List<ProjectDto> {
+        return projectRepository.findByUserEmail(email)
+                .map { category -> category.toProjectDto() }
     }
 
     override fun deleteCategory(id: Int): MessageResponse {
-        val category = categoryRepository.findById(id)
+        val category = projectRepository.findById(id)
                 .orElseThrow {  throw NotFoundException("Category Not Found") }
         val currentUserEmail = authService.getCurrentLoggedUser()
 
         if (category.user.email != currentUserEmail) {
             throw UnauthorizedException("User Not allowed to Delete!")
         }
-        categoryRepository.delete(category)
+        projectRepository.delete(category)
         return MessageResponse("Category Deleted!")
     }
 
-    override fun updateCategory(categoryDto: CategoryDto, id: Int): CategoryDto {
+    override fun updateCategory(projectDto: ProjectDto, id: Int): ProjectDto {
 
-        val category = categoryRepository.findById(id)
+        val category = projectRepository.findById(id)
                 .orElseThrow {  throw NotFoundException("Category Not Found") }
 
         val currentUserEmail = authService.getCurrentLoggedUser()
@@ -56,7 +55,7 @@ class CategoryServiceImpl(
         if (category.user.email != currentUserEmail) {
             throw UnauthorizedException("User Not allowed to Update!")
         }
-        return categoryRepository.save(category.toUpdate(categoryDto)).toCategoryDto();
+        return projectRepository.save(category.toUpdate(projectDto)).toProjectDto();
     }
 
 }

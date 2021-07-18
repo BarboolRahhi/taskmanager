@@ -1,8 +1,8 @@
 package com.codelectro.taskmanager.controller
 
-import com.codelectro.taskmanager.dto.TaskRequestDto
+import com.codelectro.taskmanager.dto.TaskRequest
 import com.codelectro.taskmanager.model.Priority
-import com.codelectro.taskmanager.model.Task
+import com.codelectro.taskmanager.model.Status
 import com.codelectro.taskmanager.repository.TaskRepository
 import com.codelectro.taskmanager.service.task.TaskService
 import org.springframework.http.HttpStatus
@@ -18,14 +18,15 @@ class TaskController(
 ) {
 
     @PostMapping
-    fun createTask(@RequestBody taskRequestDto: TaskRequestDto) =
+    fun createTask(@RequestBody taskRequestDto: TaskRequest) =
         ResponseEntity
             .status(HttpStatus.OK)
             .body(taskService.createTask(taskRequestDto))
 
     @GetMapping()
     fun getTasksWithPagination(
-        @RequestParam(required = false) completed: Boolean?,
+        @RequestParam(required = false) projectId: Int?,
+        @RequestParam(required = false) status: Status?,
         @RequestParam(required = false) priority: Priority?,
         @RequestParam(required = false) query: String?,
         @RequestParam(defaultValue = "1") page: Int,
@@ -35,12 +36,12 @@ class TaskController(
         .status(HttpStatus.OK)
         .body(
             taskService
-                .getTasksWithPagination(completed, priority, query, page, size, authentication.name)
+                .getTasksWithPagination(projectId, status, priority, query, page, size, authentication.name)
         )
 
     @PutMapping("/{id}")
     fun updateTask(
-        @RequestBody taskRequestDto: TaskRequestDto,
+        @RequestBody taskRequestDto: TaskRequest,
         @PathVariable id: Int
     ) = ResponseEntity
         .status(HttpStatus.OK)
@@ -48,7 +49,7 @@ class TaskController(
 
 
     @DeleteMapping("/{id}")
-    fun deleteTask(@RequestBody taskRequestDto: TaskRequestDto, @PathVariable id: Int) =
+    fun deleteTask(@RequestBody taskRequestDto: TaskRequest, @PathVariable id: Int) =
         ResponseEntity
             .status(HttpStatus.OK)
             .body(taskService.deleteTask(id))
