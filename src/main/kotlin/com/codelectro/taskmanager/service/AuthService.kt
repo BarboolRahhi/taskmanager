@@ -79,6 +79,7 @@ class AuthService(
                         loginRequest.email, loginRequest.password
                 ))
 
+        println("${authentication.name} - ${authentication.details} - ${authentication.principal}")
         SecurityContextHolder.getContext().authentication = authentication
         val token: String? = jwtUtils.generateJwtToken(authentication)
         return JwtResponse(token = token)

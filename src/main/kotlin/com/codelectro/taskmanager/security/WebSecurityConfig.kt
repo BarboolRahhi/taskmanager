@@ -9,8 +9,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.filter.CorsFilter
 
 @Configuration
 @EnableWebSecurity
@@ -19,6 +21,24 @@ class WebSecurityConfig(
         private val authTokenFilter: AuthTokenFilter,
         private val unauthorizedHandler: AuthEntryPointJwt
 ) : WebSecurityConfigurerAdapter() {
+
+    @Bean
+    fun corsFilter(): CorsFilter? {
+        val source = UrlBasedCorsConfigurationSource()
+        val config = CorsConfiguration()
+        //config.setAllowCredentials(true); // you USUALLY want this
+        config.addAllowedOrigin("*")
+        config.addAllowedHeader("*")
+        config.addAllowedMethod("OPTIONS")
+        config.addAllowedMethod("HEAD")
+        config.addAllowedMethod("GET")
+        config.addAllowedMethod("PUT")
+        config.addAllowedMethod("POST")
+        config.addAllowedMethod("DELETE")
+        config.addAllowedMethod("PATCH")
+        source.registerCorsConfiguration("/**", config)
+        return CorsFilter(source)
+    }
 
     @Bean
     override fun authenticationManagerBean(): AuthenticationManager {

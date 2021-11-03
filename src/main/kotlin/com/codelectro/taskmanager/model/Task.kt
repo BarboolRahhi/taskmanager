@@ -1,5 +1,6 @@
 package com.codelectro.taskmanager.model
 
+import org.hibernate.Hibernate
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -21,8 +22,23 @@ data class Task(
         var createdAt: LocalDateTime = LocalDateTime.now(),
         @Column(nullable = true)
         var completedAt: LocalDateTime? = null,
-        @ManyToOne() @JoinColumn(name="project_id", nullable = false)
+        @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name="project_id", nullable = false)
         var project: Project,
-        @ManyToOne() @JoinColumn(name="user_id", nullable = false)
+        @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name="user_id", nullable = false)
         var user: User
-)
+) {
+        override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+                other as Task
+
+                return id != null && id == other.id
+        }
+
+        override fun hashCode(): Int = 0
+
+        @Override
+        override fun toString(): String {
+                return this::class.simpleName + "(id = $id )"
+        }
+}

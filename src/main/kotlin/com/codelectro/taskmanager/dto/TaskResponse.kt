@@ -1,5 +1,6 @@
 package com.codelectro.taskmanager.dto
 
+import com.codelectro.taskmanager.dto.project.ProjectResponse
 import com.codelectro.taskmanager.model.Priority
 import com.codelectro.taskmanager.model.Status
 import com.fasterxml.jackson.annotation.JsonFormat
@@ -15,5 +16,5 @@ data class TaskResponse(
         var createdAt: LocalDateTime,
         @JsonFormat(pattern = "EEE, d MMM yyyy HH:mm:ss")
         var completedAt: LocalDateTime?,
-        var project: ProjectDto
+        var project: ProjectResponse
 )

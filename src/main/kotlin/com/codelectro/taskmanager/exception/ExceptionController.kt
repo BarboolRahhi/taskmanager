@@ -26,10 +26,11 @@ class ExceptionController {
         return ErrorResponse(e.message, HttpStatus.UNAUTHORIZED.value())
     }
 
-    @ExceptionHandler(Exception::class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    fun handleException(e: Exception): ErrorResponse {
-        return ErrorResponse(e.message, HttpStatus.INTERNAL_SERVER_ERROR.value())
-    }
+//    @ExceptionHandler(Exception::class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    fun handleException(e: Exception): ErrorResponse {
+//        println(e)
+//        return ErrorResponse(e.message, HttpStatus.INTERNAL_SERVER_ERROR.value())
+//    }
 
 }

@@ -12,9 +12,6 @@ class AuthController(
         private val authService: AuthService
 ) {
 
-    @GetMapping("hi")
-    fun getHi() = MessageResponse("hi all")
-
     @PostMapping("login")
     fun authenticateUser(@RequestBody loginRequest: LoginRequest) =
             ResponseEntity
@@ -26,7 +23,6 @@ class AuthController(
             ResponseEntity
                     .status(HttpStatus.OK)
                     .body(authService.registerUser(signupRequest))
-
 
     @PostMapping("forget_password")
     fun forgetPassword(@RequestBody resetPasswordRequest: PasswordResetRequest) =
