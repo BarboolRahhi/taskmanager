@@ -18,8 +18,10 @@ interface TaskRepository : JpaRepository<Task, Int>, JpaSpecificationExecutor<Ta
         """
        select t.project.id as projectId, 
        count(t.project.id) as totalTask, 
+       (select count(*) from Task t1 where t1.status = 'TODO' and t1.project.id = t.project.id) as countOfTodoTask,
+       (select count(*) from Task t1 where t1.status = 'IN_PROGRESS' and t1.project.id = t.project.id) as countOfInProgressTask, 
        (select count(*) from Task t1 where t1.status = 'DONE' and t1.project.id = t.project.id) as countOfDoneTask 
-       from Task t group by t.project.id
+       from Task t where t.user.email = :email group by t.project.id
     """
     )
     fun getStatusOfTaskByUser(@Param("email") email: String): List<TaskStatus>

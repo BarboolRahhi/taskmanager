@@ -34,7 +34,7 @@ class ProjectServiceImpl(
     @Transactional(readOnly = true)
     override fun getProjectsByUser(email: String): List<ProjectResponse> {
         val statusData =
-            taskRepository.getStatusOfTaskByUser(email).map { taskStatus -> taskStatus.getProjectId() to taskStatus }.toMap()
+            taskRepository.getStatusOfTaskByUser(email).associateBy { taskStatus -> taskStatus.getProjectId() }
         return projectRepository.findByUserEmail(email)
                 .map { project -> project.toProjectResponse(statusData[project.id]) }
     }

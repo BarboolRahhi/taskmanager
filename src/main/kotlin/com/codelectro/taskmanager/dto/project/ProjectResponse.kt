@@ -9,6 +9,6 @@ data class ProjectResponse(
     var startDate: LocalDate,
     var dueDate: LocalDate?,
     var isCompleted: Boolean?,
-    var totalTask: Int,
-    var progress: Int
+    var taskDetails: TaskDetails
 )
+

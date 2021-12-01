@@ -5,6 +5,7 @@ import com.codelectro.taskmanager.dto.TaskResponse
 import com.codelectro.taskmanager.dto.UserDto
 import com.codelectro.taskmanager.dto.project.ProjectRequest
 import com.codelectro.taskmanager.dto.project.ProjectResponse
+import com.codelectro.taskmanager.dto.project.TaskDetails
 import com.codelectro.taskmanager.model.*
 import java.time.LocalDateTime
 
@@ -19,8 +20,15 @@ fun ProjectRequest.toProjectEntity(user: User) = Project(null, name, description
 
 fun Project.toProjectResponse(taskStatus: TaskStatus?) =
     ProjectResponse(
-        id, name, description, startDate, dueDate, isCompleted, taskStatus?.getTotalTask() ?: 0,
-        taskStatus?.getProgress() ?: 0
+        id, name, description, startDate, dueDate, isCompleted, toTaskDetails(taskStatus)
+    )
+fun toTaskDetails(taskStatus: TaskStatus?) =
+    TaskDetails(
+        totalTask = taskStatus?.getTotalTask() ?: 0,
+        countOfTodo = taskStatus?.getCountOfTodoTask() ?: 0,
+        countOfInProgress = taskStatus?.getCountOfInProgressTask() ?: 0,
+        countOfDone = taskStatus?.getCountOfDoneTask() ?: 0,
+        progress = taskStatus?.getProgress() ?: 0
     )
 
 fun TaskStatus.getProgress(): Int {
