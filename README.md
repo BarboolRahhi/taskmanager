@@ -1,4 +1,6 @@
 # Task Manager
+Task Manager is a RESTful Web service for planning, tracking, and managing daily tasks.
+
 ##### Task Manager UI Link build with Angular
 https://github.com/BarboolRahhi/task-manager-ui
 
