@@ -8,5 +8,5 @@ data class TaskRequest(
         var description: String,
         var status: Status?,
         var priority: Priority,
-        var categoryId: Int
+        var projectId: Int
 )

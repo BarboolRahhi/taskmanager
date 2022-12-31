@@ -30,7 +30,7 @@ class TaskController(
         @RequestParam(required = false) priority: Priority?,
         @RequestParam(required = false) query: String?,
         @RequestParam(defaultValue = "1") page: Int,
-        @RequestParam(defaultValue = "2") size: Int,
+        @RequestParam(defaultValue = "10") size: Int,
         authentication: Authentication
     ) = ResponseEntity
         .status(HttpStatus.OK)

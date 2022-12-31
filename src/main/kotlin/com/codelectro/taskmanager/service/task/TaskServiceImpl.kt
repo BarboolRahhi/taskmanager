@@ -40,15 +40,16 @@ class TaskServiceImpl(
     override fun createTask(taskRequestDto: TaskRequest): TaskResponse {
         val currentUserEmail = authService.getCurrentLoggedUser()
         val user = userRepository.findByEmail(currentUserEmail)
-            ?: throw NotFoundException("User Not Found!")
+                ?: throw NotFoundException("User Not Found!")
 
-        val category = projectRepository.findById(taskRequestDto.categoryId)
+        val project = projectRepository.findById(taskRequestDto.projectId)
             .orElseThrow { throw RuntimeException("Category Not Found") }
-        if (category.user.email != currentUserEmail) {
+
+        if (project.user.email != currentUserEmail) {
             throw UnauthorizedException("Access is denied due to invalid credentials!")
         }
 
-        return taskRepository.save(taskRequestDto.toTask(category, user))
+        return taskRepository.save(taskRequestDto.toTask(project, user))
             .toTaskResponseDto()
     }
 
@@ -62,9 +63,9 @@ class TaskServiceImpl(
         email: String
     ): PagingResponseDto<TaskResponse> {
         val pageable = PageRequest.of(page - 1, size);
-        return getPagingDto {
+        return getPagingDto(
             taskRepository.findAll(getSpecification(projectId, status, priority, query, email), pageable)
-        }
+        )
     }
 
     fun getSpecification(
@@ -75,6 +76,10 @@ class TaskServiceImpl(
         email: String
     ): Specification<Task> {
         return Specification<Task> { root, cq, cb ->
+
+            root.fetch<Task, User>("user")
+            root.fetch<Task, Project>("project")
+
             var predicate = cb.conjunction()
             predicate = cb.and(predicate, cb.equal(root.get<User>(USER).get<String>(EMAIL), email))
 
@@ -97,13 +102,13 @@ class TaskServiceImpl(
         }
     }
 
-    private fun getPagingDto(pageTask: () -> Page<Task>): PagingResponseDto<TaskResponse> {
-        val taskDto = pageTask().content.map { task -> task.toTaskResponseDto() }
+    private fun getPagingDto(pageTask: Page<Task>): PagingResponseDto<TaskResponse> {
+        val taskDto = pageTask.content.map { task -> task.toTaskResponseDto() }
         return PagingResponseDto(
             data = taskDto,
-            totalItems = pageTask().totalElements,
-            totalPages = pageTask().totalPages,
-            currentPage = pageTask().number + 1
+            totalItems = pageTask.totalElements,
+            totalPages = pageTask.totalPages,
+            currentPage = pageTask.number + 1
         )
     }
 

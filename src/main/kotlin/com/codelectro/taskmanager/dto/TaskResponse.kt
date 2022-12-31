@@ -16,5 +16,5 @@ data class TaskResponse(
         var createdAt: LocalDateTime,
         @JsonFormat(pattern = "EEE, d MMM yyyy HH:mm:ss")
         var completedAt: LocalDateTime?,
-        var project: ProjectResponse
+//        var project: ProjectResponse
 )

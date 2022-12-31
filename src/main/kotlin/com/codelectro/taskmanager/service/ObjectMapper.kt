@@ -51,7 +51,7 @@ fun TaskRequest.toTask(project: Project, user: User) = Task(
 )
 
 fun Task.toTaskResponseDto() = TaskResponse(
-    id, title, description, status, priority, createdAt, completedAt, project.toProjectResponse(null)
+    id, title, description, status, priority, createdAt, completedAt
 )
 
 fun Task.toUpdate(dto: TaskRequest) = this.copy(
