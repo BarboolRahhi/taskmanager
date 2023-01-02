@@ -3,12 +3,13 @@ package com.codelectro.taskmanager.security
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -17,10 +18,10 @@ import org.springframework.web.filter.CorsFilter
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig(
-        private val userDetailsService: UserDetailsServiceImpl,
-        private val authTokenFilter: AuthTokenFilter,
-        private val unauthorizedHandler: AuthEntryPointJwt
-) : WebSecurityConfigurerAdapter() {
+    private val userDetailsService: UserDetailsServiceImpl,
+    private val authTokenFilter: AuthTokenFilter,
+    private val unauthorizedHandler: AuthEntryPointJwt
+) {
 
     @Bean
     fun corsFilter(): CorsFilter? {
@@ -41,25 +42,34 @@ class WebSecurityConfig(
     }
 
     @Bean
-    override fun authenticationManagerBean(): AuthenticationManager {
-        return super.authenticationManagerBean()
+    fun authenticationManagerBean(authenticationConfiguration: AuthenticationConfiguration): AuthenticationManager {
+        return authenticationConfiguration.authenticationManager
     }
 
-    override fun configure(auth: AuthenticationManagerBuilder?) {
-        auth?.userDetailsService(userDetailsService)?.passwordEncoder(passwordEncoder())
+    @Bean
+    fun authenticationProvider(): DaoAuthenticationProvider {
+        val daoAuthenticationProvider = DaoAuthenticationProvider()
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService)
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder())
+        return daoAuthenticationProvider;
     }
 
-    override fun configure(http: HttpSecurity) {
+    @Bean
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-                .cors().and().csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement {
-                    it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                }
-                .authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated()
-        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .csrf().disable()
+            .exceptionHandling {
+                it.authenticationEntryPoint(unauthorizedHandler)
+            }
+            .sessionManagement {
+                it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            }
+            .authorizeHttpRequests {
+                it.requestMatchers("/api/auth/**").permitAll().anyRequest().authenticated()
+            }
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
+        return http.build()
     }
 
     @Bean

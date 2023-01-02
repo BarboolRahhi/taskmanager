@@ -2,7 +2,7 @@ package com.codelectro.taskmanager.model
 
 import org.hibernate.Hibernate
 import java.time.LocalDateTime
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 data class PasswordResetToken(
