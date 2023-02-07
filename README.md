@@ -1,5 +1,6 @@
 # Task Manager
-Task Manager is a RESTful Web service for planning, tracking, and managing daily tasks.
+Task Manager is a RESTful Web service for planning, tracking, and managing daily tasks. 
+Application is upgrade to Spring boot 3.0. Updated Spring security and migrated to javax to jakarta
 
 ##### Task Manager UI Link build with Angular
 https://github.com/BarboolRahhi/task-manager-ui
