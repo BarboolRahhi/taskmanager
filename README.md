@@ -14,3 +14,7 @@ https://github.com/BarboolRahhi/task-manager-ui
 ![alt text](https://github.com/BarboolRahhi/taskmanager/blob/master/project_view.png)
 
 ![alt text](https://github.com/BarboolRahhi/taskmanager/blob/master/new_project.png)
+
+![alt text](https://github.com/BarboolRahhi/taskmanager/blob/master/task_board.png)
+
+
